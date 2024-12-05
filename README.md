@@ -1,6 +1,6 @@
 # Sequin Helm Chart
 
-This Helm chart deploys Sequin along with its required PostgreSQL and Redis dependencies on a Kubernetes cluster.
+This Helm chart deploys [Sequin](https://github.com/sequinstream/sequin) along with its required PostgreSQL and Redis dependencies on a Kubernetes cluster.
 
 ## Prerequisites
 
@@ -13,7 +13,7 @@ This Helm chart deploys Sequin along with its required PostgreSQL and Redis depe
 
 ```bash
 # Add the repository
-helm repo add sequin https://your-repo-url.com
+helm repo add sequin https://sequinstream.github.io/helm-chart-sequin
 
 # Install the chart with the release name "sequin"
 helm install sequin .
@@ -25,34 +25,34 @@ The following table lists the configurable parameters of the Sequin chart and th
 
 ### Sequin Configuration
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
+| Parameter                 | Description             | Default         |
+| ------------------------- | ----------------------- | --------------- |
 | `sequin.image.repository` | Sequin image repository | `sequin/sequin` |
-| `sequin.image.tag` | Sequin image tag | `latest` |
-| `sequin.image.pullPolicy` | Image pull policy | `Always` |
-| `sequin.service.type` | Kubernetes service type | `ClusterIP` |
-| `sequin.service.port` | Kubernetes service port | `7376` |
+| `sequin.image.tag`        | Sequin image tag        | `latest`        |
+| `sequin.image.pullPolicy` | Image pull policy       | `Always`        |
+| `sequin.service.type`     | Kubernetes service type | `ClusterIP`     |
+| `sequin.service.port`     | Kubernetes service port | `7376`          |
 
 ### PostgreSQL Configuration
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
+| Parameter                   | Description                 | Default    |
+| --------------------------- | --------------------------- | ---------- |
 | `postgres.image.repository` | PostgreSQL image repository | `postgres` |
-| `postgres.image.tag` | PostgreSQL image tag | `16` |
-| `postgres.service.type` | Kubernetes service type | `NodePort` |
-| `postgres.service.nodePort` | External access port | `30432` |
-| `postgres.config.database` | PostgreSQL database name | `sequin` |
-| `postgres.persistence.size` | PVC size for PostgreSQL | `1Gi` |
+| `postgres.image.tag`        | PostgreSQL image tag        | `16`       |
+| `postgres.service.type`     | Kubernetes service type     | `NodePort` |
+| `postgres.service.nodePort` | External access port        | `30432`    |
+| `postgres.config.database`  | PostgreSQL database name    | `sequin`   |
+| `postgres.persistence.size` | PVC size for PostgreSQL     | `1Gi`      |
 
 ### Redis Configuration
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `redis.image.repository` | Redis image repository | `redis` |
-| `redis.image.tag` | Redis image tag | `7` |
-| `redis.service.type` | Kubernetes service type | `NodePort` |
-| `redis.service.nodePort` | External access port | `30379` |
-| `redis.persistence.size` | PVC size for Redis | `1Gi` |
+| Parameter                | Description             | Default    |
+| ------------------------ | ----------------------- | ---------- |
+| `redis.image.repository` | Redis image repository  | `redis`    |
+| `redis.image.tag`        | Redis image tag         | `7`        |
+| `redis.service.type`     | Kubernetes service type | `NodePort` |
+| `redis.service.nodePort` | External access port    | `30379`    |
+| `redis.persistence.size` | PVC size for Redis      | `1Gi`      |
 
 ## Accessing Services
 
@@ -99,5 +99,6 @@ This chart is licensed under the MIT License - see the [LICENSE](LICENSE) file f
 ## Support
 
 If you have any questions or need help, please:
+
 1. Check the [documentation](link-to-docs)
 2. Open an issue in the GitHub repository
