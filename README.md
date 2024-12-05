@@ -60,9 +60,9 @@ The following table lists the configurable parameters of the Sequin chart and th
 
 After deploying the chart, you can access the services at:
 
-- Sequin: Internal access via `sequin-sequin:7376`
-- PostgreSQL: External access via `localhost:30432`
-- Redis: External access via `localhost:30379`
+- Sequin: External access via `http://<node-ip>:31376` (`http://localhost:31376` if you are running locally)
+- PostgreSQL: External access via `http://<node-ip>:30432` (`http://localhost:30432` if you are running locally)
+- Redis: External access via `http://<node-ip>:30379` (`http://localhost:30379` if you are running locally)
 
 ## Persistence
 
