@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-playground-config
-data:
-  playground.yml: |
-{{ .Values.sequin.playground.content | indent 4 }}
-

@@ -16,8 +16,10 @@ This Helm chart deploys [Sequin](https://github.com/sequinstream/sequin) along w
 helm repo add sequin https://sequinstream.github.io/helm-chart-sequin
 
 # Install the chart with the release name "sequin"
-helm install sequin .
+helm install sequin sequin/sequin
 ```
+
+You can now access Sequin at `http://<node-ip>:31376` (`http://localhost:31376` if you are running locally).
 
 ## Configuration
 
@@ -30,8 +32,8 @@ The following table lists the configurable parameters of the Sequin chart and th
 | `sequin.image.repository` | Sequin image repository | `sequin/sequin` |
 | `sequin.image.tag`        | Sequin image tag        | `latest`        |
 | `sequin.image.pullPolicy` | Image pull policy       | `Always`        |
-| `sequin.service.type`     | Kubernetes service type | `ClusterIP`     |
-| `sequin.service.port`     | Kubernetes service port | `7376`          |
+| `sequin.service.type`     | Kubernetes service type | `NodePort`      |
+| `sequin.service.nodePort` | External access port    | `31376`         |
 
 ### PostgreSQL Configuration
 

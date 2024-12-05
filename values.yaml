@@ -4,8 +4,9 @@ sequin:
     tag: latest
     pullPolicy: Always
   service:
-    type: ClusterIP
+    type: NodePort
     port: 7376
+    nodePort: 31376
   config:
     pgHostname: sequin-postgres
     pgDatabase: sequin
@@ -16,30 +17,6 @@ sequin:
     secretKeyBase: "wDPLYus0pvD6qJhKJICO4dauYPXfO/Yl782Zjtpew5qRBDp7CZvbWtQmY0eB13If"
     vaultKey: "2Sig69bIpuSm2kv0VQfDekET2qy8qUZGI8v3/h3ASiY="
     redisUrl: "redis://sequin-redis:6379"
-  playground:
-    configPath: /config/playground.yml
-    content: |
-      # Your playground.yml content goes here
-      account:
-        name: "Playground"
-
-      users:
-        - account: "Playground"
-          email: "admin@sequinstream.com"
-          password: "sequinpassword!"
-
-      databases:
-        - name: "sequin-playground"
-          username: "postgres"
-          password: "postgres"
-          hostname: "sequin_postgres"
-          database: "sequin_playground"
-          port: 5432
-          slot_name: "sequin_slot"
-          publication_name: "sequin_pub"
-          tables:
-            - table_name: "products"
-              sort_column_name: "updated_at"
 
 postgres:
   image:

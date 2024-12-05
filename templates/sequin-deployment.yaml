@@ -36,13 +36,4 @@ spec:
               value: {{ .Values.sequin.config.vaultKey | quote }}
             - name: REDIS_URL
               value: {{ .Values.sequin.config.redisUrl | quote }}
-            - name: CONFIG_FILE_PATH
-              value: {{ .Values.sequin.playground.configPath | quote }}
-          volumeMounts:
-            - name: playground-config
-              mountPath: /config
-      volumes:
-        - name: playground-config
-          configMap:
-            name: {{ .Release.Name }}-playground-config
 

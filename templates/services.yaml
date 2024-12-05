@@ -7,6 +7,7 @@ spec:
   ports:
     - port: {{ .Values.sequin.service.port }}
       targetPort: 7376
+      nodePort: {{ .Values.sequin.service.nodePort }}
   selector:
     app: {{ .Release.Name }}-sequin
 ---

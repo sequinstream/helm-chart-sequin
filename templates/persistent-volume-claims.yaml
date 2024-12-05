@@ -5,6 +5,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: hostpath
   resources:
     requests:
       storage: {{ .Values.postgres.persistence.size }}
@@ -16,6 +17,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
+  storageClassName: hostpath
   resources:
     requests:
       storage: {{ .Values.redis.persistence.size }}
