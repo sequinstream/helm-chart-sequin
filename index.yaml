@@ -1,0 +1,13 @@
+apiVersion: v1
+entries:
+  sequin:
+  - apiVersion: v2
+    created: "2024-12-05T13:12:38.995632-08:00"
+    description: Helm chart for Sequin with PostgreSQL and Redis
+    digest: bdbbe4e3a4787e45a4ce5a675dadb9f8dd5c51d1f5460ff43fae5cb29b3053e3
+    name: sequin
+    type: application
+    urls:
+    - sequin-0.1.0.tgz
+    version: 0.1.0
+generated: "2024-12-05T13:12:38.994326-08:00"
