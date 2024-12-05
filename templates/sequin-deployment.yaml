@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-sequin
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-sequin
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-sequin
+    spec:
+      containers:
+        - name: sequin
+          image: "{{ .Values.sequin.image.repository }}:{{ .Values.sequin.image.tag }}"
+          imagePullPolicy: {{ .Values.sequin.image.pullPolicy }}
+          ports:
+            - containerPort: 7376
+          env:
+            - name: PG_HOSTNAME
+              value: {{ .Values.sequin.config.pgHostname | quote }}
+            - name: PG_DATABASE
+              value: {{ .Values.sequin.config.pgDatabase | quote }}
+            - name: PG_PORT
+              value: {{ .Values.sequin.config.pgPort | quote }}
+            - name: PG_USERNAME
+              value: {{ .Values.sequin.config.pgUsername | quote }}
+            - name: PG_PASSWORD
+              value: {{ .Values.sequin.config.pgPassword | quote }}
+            - name: PG_POOL_SIZE
+              value: {{ .Values.sequin.config.pgPoolSize | quote }}
+            - name: SECRET_KEY_BASE
+              value: {{ .Values.sequin.config.secretKeyBase | quote }}
+            - name: VAULT_KEY
+              value: {{ .Values.sequin.config.vaultKey | quote }}
+            - name: REDIS_URL
+              value: {{ .Values.sequin.config.redisUrl | quote }}
+            - name: CONFIG_FILE_PATH
+              value: {{ .Values.sequin.playground.configPath | quote }}
+          volumeMounts:
+            - name: playground-config
+              mountPath: /config
+      volumes:
+        - name: playground-config
+          configMap:
+            name: {{ .Release.Name }}-playground-config
+

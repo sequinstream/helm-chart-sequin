@@ -1,0 +1,6 @@
+apiVersion: v2
+name: sequin
+description: Helm chart for Sequin with PostgreSQL and Redis
+version: 0.1.0
+type: application
+
