@@ -15,6 +15,12 @@ This Helm chart deploys [Sequin](https://github.com/sequinstream/sequin) along w
 # Add the repository
 helm repo add sequin https://sequinstream.github.io/helm-chart-sequin
 
+# Add the Bitnami repository (required for dependencies)
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+# Update Helm repositories
+helm repo update
+
 # Install the chart with the release name "sequin"
 helm install sequin sequin/sequin
 ```
@@ -37,36 +43,37 @@ The following table lists the configurable parameters of the Sequin chart and th
 
 ### PostgreSQL Configuration
 
-| Parameter                   | Description                 | Default    |
-| --------------------------- | --------------------------- | ---------- |
-| `postgres.image.repository` | PostgreSQL image repository | `postgres` |
-| `postgres.image.tag`        | PostgreSQL image tag        | `16`       |
-| `postgres.service.type`     | Kubernetes service type     | `NodePort` |
-| `postgres.service.nodePort` | External access port        | `30432`    |
-| `postgres.config.database`  | PostgreSQL database name    | `sequin`   |
-| `postgres.persistence.size` | PVC size for PostgreSQL     | `1Gi`      |
+This chart uses Bitnami's PostgreSQL chart as a dependency. For a full list of configuration options, please see the [Bitnami PostgreSQL chart documentation](https://github.com/bitnami/charts/tree/main/bitnami/postgresql).
+
+| Parameter                        | Description                      | Default    |
+| -------------------------------- | -------------------------------- | ---------- |
+| `postgresql.enabled`             | Deploy PostgreSQL                | `true`     |
+| `postgresql.auth.username`       | PostgreSQL username              | `postgres` |
+| `postgresql.auth.password`       | PostgreSQL password              | `postgres` |
+| `postgresql.auth.database`       | PostgreSQL database name         | `sequin`   |
+| `postgresql.primary.service.ports.postgresql` | PostgreSQL port     | `5432`     |
 
 ### Redis Configuration
 
-| Parameter                | Description             | Default    |
-| ------------------------ | ----------------------- | ---------- |
-| `redis.image.repository` | Redis image repository  | `redis`    |
-| `redis.image.tag`        | Redis image tag         | `7`        |
-| `redis.service.type`     | Kubernetes service type | `NodePort` |
-| `redis.service.nodePort` | External access port    | `30379`    |
-| `redis.persistence.size` | PVC size for Redis      | `1Gi`      |
+This chart uses Bitnami's Redis chart as a dependency. For a full list of configuration options, please see the [Bitnami Redis chart documentation](https://github.com/bitnami/charts/tree/main/bitnami/redis).
+
+| Parameter                    | Description                 | Default |
+| ---------------------------- | --------------------------- | ------- |
+| `redis.enabled`              | Deploy Redis                | `true`  |
+| `redis.auth.enabled`         | Enable Redis authentication | `false` |
+| `redis.master.service.ports.redis` | Redis port            | `6379`  |
 
 ## Accessing Services
 
 After deploying the chart, you can access the services at:
 
 - Sequin: External access via `http://<node-ip>:31376` (`http://localhost:31376` if you are running locally)
-- PostgreSQL: External access via `http://<node-ip>:30432` (`http://localhost:30432` if you are running locally)
-- Redis: External access via `http://<node-ip>:30379` (`http://localhost:30379` if you are running locally)
+- PostgreSQL: Internal access via `<release-name>-postgresql:5432`
+- Redis: Internal access via `<release-name>-redis-master:6379`
 
 ## Persistence
 
-The chart mounts persistent volumes for both PostgreSQL and Redis. The default size is 1Gi for each service. You can modify this in the `values.yaml` file.
+Both PostgreSQL and Redis use persistent storage by default through their respective Bitnami charts. You can configure persistence options through the Bitnami chart values.
 
 ## Customization
 
@@ -74,6 +81,32 @@ To override the default values, create a file called `custom-values.yaml` and sp
 
 ```bash
 helm install sequin . -f custom-values.yaml
+```
+
+### Example: Configuring External PostgreSQL
+
+```yaml
+postgresql:
+  enabled: false
+
+sequin:
+  config:
+    pgHostname: "my-external-postgres-host"
+    pgPort: 5432
+    pgUsername: "my-username"
+    pgPassword: "my-password"
+    pgDatabase: "my-database"
+```
+
+### Example: Configuring External Redis
+
+```yaml
+redis:
+  enabled: false
+
+sequin:
+  config:
+    redisUrl: "redis://my-external-redis-host:6379"
 ```
 
 ## Uninstalling the Chart

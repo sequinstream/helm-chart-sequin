@@ -1,6 +1,9 @@
-# IntelliJ IDEA
-.idea
-*.iml
+# Helm chart dependencies
+charts/
 
-# macOS
+# IDE files
+.idea/
+.vscode/
+
+# OS files
 .DS_Store

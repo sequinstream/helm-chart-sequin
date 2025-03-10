@@ -8,7 +8,7 @@ sequin:
     port: 7376
     nodePort: 31376
   config:
-    pgHostname: sequin-postgres
+    pgHostname: "{{ .Release.Name }}-postgresql"
     pgDatabase: sequin
     pgPort: 5432
     pgUsername: postgres
@@ -16,35 +16,24 @@ sequin:
     pgPoolSize: 20
     secretKeyBase: "wDPLYus0pvD6qJhKJICO4dauYPXfO/Yl782Zjtpew5qRBDp7CZvbWtQmY0eB13If"
     vaultKey: "2Sig69bIpuSm2kv0VQfDekET2qy8qUZGI8v3/h3ASiY="
-    redisUrl: "redis://sequin-redis:6379"
+    redisUrl: "redis://{{ .Release.Name }}-redis-master:6379"
 
-postgres:
-  image:
-    repository: postgres
-    tag: "16"
-    pullPolicy: IfNotPresent
-  service:
-    type: ClusterIP
-    port: 5432
-    nodePort: 7377
-  config:
-    database: sequin
+postgresql:
+  enabled: true
+  auth:
     username: postgres
     password: postgres
-    walLevel: logical
-  persistence:
-    enabled: true
-    size: 1Gi
+    database: sequin
+  primary:
+    service:
+      ports:
+        postgresql: 5432
 
 redis:
-  image:
-    repository: redis
-    tag: "7"
-    pullPolicy: IfNotPresent
-  service:
-    type: ClusterIP
-    port: 6379
-    nodePort: 7378
-  persistence:
-    enabled: true
-    size: 1Gi
+  enabled: true
+  auth:
+    enabled: false
+  master:
+    service:
+      ports:
+        redis: 6379

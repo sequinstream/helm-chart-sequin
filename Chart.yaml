@@ -4,3 +4,12 @@ description: Helm chart for Sequin with PostgreSQL and Redis
 version: 0.1.0
 type: application
 
+dependencies:
+  - name: postgresql
+    version: "13.2.1"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: postgresql.enabled
+  - name: redis
+    version: "18.1.0"
+    repository: "https://charts.bitnami.com/bitnami"
+    condition: redis.enabled
