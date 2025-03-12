@@ -8,6 +8,9 @@ sequin:
     port: 7376
     nodePort: 31376
   config:
+    # PostgreSQL connection settings
+    # If postgresql.enabled=true, these values will be used
+    # If postgresql.enabled=false, values from externalPostgresql section will be used
     pgHostname: "{{ .Release.Name }}-postgresql"
     pgDatabase: sequin
     pgPort: 5432
@@ -16,9 +19,14 @@ sequin:
     pgPoolSize: 20
     secretKeyBase: "wDPLYus0pvD6qJhKJICO4dauYPXfO/Yl782Zjtpew5qRBDp7CZvbWtQmY0eB13If"
     vaultKey: "2Sig69bIpuSm2kv0VQfDekET2qy8qUZGI8v3/h3ASiY="
+    # Redis connection settings
+    # If redis.enabled=true, this value will be used
+    # If redis.enabled=false, values from externalRedis section will be used
     redisUrl: "redis://{{ .Release.Name }}-redis-master:6379"
 
+# PostgreSQL chart configuration
 postgresql:
+  # Set to false to use an external PostgreSQL database
   enabled: true
   auth:
     username: postgres
@@ -29,7 +37,27 @@ postgresql:
       ports:
         postgresql: 5432
 
+# External PostgreSQL configuration
+# Only used when postgresql.enabled is set to false
+externalPostgresql:
+  # External PostgreSQL host
+  host: ""
+  # External PostgreSQL port
+  port: 5432
+  # External PostgreSQL username
+  username: postgres
+  # External PostgreSQL password
+  password: ""
+  # External PostgreSQL database name
+  database: sequin
+  # External PostgreSQL connection pool size
+  poolSize: 20
+  # Use SSL for PostgreSQL connection
+  ssl: false
+
+# Redis chart configuration
 redis:
+  # Set to false to use an external Redis instance
   enabled: true
   auth:
     enabled: false
@@ -37,3 +65,17 @@ redis:
     service:
       ports:
         redis: 6379
+
+# External Redis configuration
+# Only used when redis.enabled is set to false
+externalRedis:
+  # External Redis host
+  host: ""
+  # External Redis port
+  port: 6379
+  # External Redis password (leave empty if auth is disabled)
+  password: ""
+  # Use SSL for Redis connection
+  ssl: false
+  # Database index
+  database: 0

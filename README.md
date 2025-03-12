@@ -230,6 +230,20 @@ This chart uses Bitnami's PostgreSQL chart as a dependency. For a full list of c
 | `postgresql.auth.database`       | PostgreSQL database name         | `sequin`   |
 | `postgresql.primary.service.ports.postgresql` | PostgreSQL port     | `5432`     |
 
+### External PostgreSQL Configuration
+
+When `postgresql.enabled` is set to `false`, the following external PostgreSQL configuration is used:
+
+| Parameter                        | Description                      | Default    |
+| -------------------------------- | -------------------------------- | ---------- |
+| `externalPostgresql.host`        | External PostgreSQL host         | `""`       |
+| `externalPostgresql.port`        | External PostgreSQL port         | `5432`     |
+| `externalPostgresql.username`    | External PostgreSQL username     | `postgres` |
+| `externalPostgresql.password`    | External PostgreSQL password     | `""`       |
+| `externalPostgresql.database`    | External PostgreSQL database name| `sequin`   |
+| `externalPostgresql.poolSize`    | Connection pool size             | `20`       |
+| `externalPostgresql.ssl`         | Use SSL for PostgreSQL connection| `false`    |
+
 ### Redis Configuration
 
 This chart uses Bitnami's Redis chart as a dependency. For a full list of configuration options, please see the [Bitnami Redis chart documentation](https://github.com/bitnami/charts/tree/main/bitnami/redis).
@@ -239,6 +253,18 @@ This chart uses Bitnami's Redis chart as a dependency. For a full list of config
 | `redis.enabled`              | Deploy Redis                | `true`  |
 | `redis.auth.enabled`         | Enable Redis authentication | `false` |
 | `redis.master.service.ports.redis` | Redis port            | `6379`  |
+
+### External Redis Configuration
+
+When `redis.enabled` is set to `false`, the following external Redis configuration is used:
+
+| Parameter                  | Description                 | Default |
+| -------------------------- | --------------------------- | ------- |
+| `externalRedis.host`       | External Redis host         | `""`    |
+| `externalRedis.port`       | External Redis port         | `6379`  |
+| `externalRedis.password`   | External Redis password     | `""`    |
+| `externalRedis.ssl`        | Use SSL for Redis connection| `false` |
+| `externalRedis.database`   | Redis database index        | `0`     |
 
 ## Accessing Services
 
@@ -263,27 +289,35 @@ helm install sequin . -f custom-values.yaml
 ### Example: Configuring External PostgreSQL
 
 ```yaml
+# Disable the built-in PostgreSQL
 postgresql:
   enabled: false
 
-sequin:
-  config:
-    pgHostname: "my-external-postgres-host"
-    pgPort: 5432
-    pgUsername: "my-username"
-    pgPassword: "my-password"
-    pgDatabase: "my-database"
+# Configure external PostgreSQL
+externalPostgresql:
+  host: "my-external-postgres-host"
+  port: 5432
+  username: "my-username"
+  password: "my-password"
+  database: "my-database"
+  poolSize: 20
+  ssl: false
 ```
 
 ### Example: Configuring External Redis
 
 ```yaml
+# Disable the built-in Redis
 redis:
   enabled: false
 
-sequin:
-  config:
-    redisUrl: "redis://my-external-redis-host:6379"
+# Configure external Redis
+externalRedis:
+  host: "my-external-redis-host"
+  port: 6379
+  password: "my-redis-password"
+  database: 0
+  ssl: false
 ```
 
 ## Uninstalling the Chart

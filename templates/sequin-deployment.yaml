@@ -19,21 +19,20 @@ spec:
             - containerPort: 7376
           env:
             - name: PG_HOSTNAME
-              value: {{ .Values.sequin.config.pgHostname | quote }}
+              value: {{ if not .Values.postgresql.enabled }}{{ .Values.externalPostgresql.host | quote }}{{ else }}{{ .Values.sequin.config.pgHostname | quote }}{{ end }}
             - name: PG_DATABASE
-              value: {{ .Values.sequin.config.pgDatabase | quote }}
+              value: {{ if not .Values.postgresql.enabled }}{{ .Values.externalPostgresql.database | quote }}{{ else }}{{ .Values.sequin.config.pgDatabase | quote }}{{ end }}
             - name: PG_PORT
-              value: {{ .Values.sequin.config.pgPort | quote }}
+              value: {{ if not .Values.postgresql.enabled }}{{ .Values.externalPostgresql.port | quote }}{{ else }}{{ .Values.sequin.config.pgPort | quote }}{{ end }}
             - name: PG_USERNAME
-              value: {{ .Values.sequin.config.pgUsername | quote }}
+              value: {{ if not .Values.postgresql.enabled }}{{ .Values.externalPostgresql.username | quote }}{{ else }}{{ .Values.sequin.config.pgUsername | quote }}{{ end }}
             - name: PG_PASSWORD
-              value: {{ .Values.sequin.config.pgPassword | quote }}
+              value: {{ if not .Values.postgresql.enabled }}{{ .Values.externalPostgresql.password | quote }}{{ else }}{{ .Values.sequin.config.pgPassword | quote }}{{ end }}
             - name: PG_POOL_SIZE
-              value: {{ .Values.sequin.config.pgPoolSize | quote }}
+              value: {{ if not .Values.postgresql.enabled }}{{ .Values.externalPostgresql.poolSize | quote }}{{ else }}{{ .Values.sequin.config.pgPoolSize | quote }}{{ end }}
             - name: SECRET_KEY_BASE
               value: {{ .Values.sequin.config.secretKeyBase | quote }}
             - name: VAULT_KEY
               value: {{ .Values.sequin.config.vaultKey | quote }}
             - name: REDIS_URL
-              value: {{ .Values.sequin.config.redisUrl | quote }}
-
+              value: {{ if not .Values.redis.enabled }}{{ printf "redis://%s:%s/%s" .Values.externalRedis.host (toString .Values.externalRedis.port) (toString .Values.externalRedis.database) | quote }}{{ else }}{{ .Values.sequin.config.redisUrl | quote }}{{ end }}
