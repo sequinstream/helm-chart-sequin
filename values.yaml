@@ -1,81 +1,361 @@
+## @section Global parameters
+## Global Docker image parameters
+## Please, note that this will override the image parameters, including dependencies, configured to use the global value
+## Current available global Docker image parameters: imageRegistry, imagePullSecrets and storageClass
+##
+
+## @param global.imageRegistry Global Docker image registry
+## @param global.imagePullSecrets Global Docker registry secret names as an array
+## @param global.defaultStorageClass Global default StorageClass for Persistent Volume(s)
+##
+global:
+  imageRegistry: ""
+  ## E.g.
+  ## imagePullSecrets:
+  ##   - myRegistryKeySecretName
+  ##
+  imagePullSecrets: []
+  defaultStorageClass: ""
+  ## Security parameters
+  ##
+  security:
+    ## @param global.security.allowInsecureImages Allows skipping image verification
+    allowInsecureImages: false
+
+## @section Common parameters
+##
+
+## @param kubeVersion Override Kubernetes version
+##
+kubeVersion: ""
+## @param nameOverride String to partially override common.names.fullname
+##
+nameOverride: ""
+## @param fullnameOverride String to fully override common.names.fullname
+##
+fullnameOverride: ""
+## @param commonLabels Labels to add to all deployed objects
+##
+commonLabels: {}
+## @param commonAnnotations Annotations to add to all deployed objects
+##
+commonAnnotations: {}
+## @param clusterDomain Kubernetes cluster domain name
+##
+clusterDomain: cluster.local
+## @param extraDeploy Array of extra objects to deploy with the release
+##
+extraDeploy: []
+## @param usePasswordFiles Mount credentials as files instead of using environment variables
+##
+usePasswordFiles: true
+## Enable diagnostic mode in the deployment
+##
+diagnosticMode:
+  ## @param diagnosticMode.enabled Enable diagnostic mode (all probes will be disabled and the command will be overridden)
+  ##
+  enabled: false
+  ## @param diagnosticMode.command Command to override all containers in the deployment
+  ##
+  command:
+    - sleep
+  ## @param diagnosticMode.args Args to override all containers in the deployment
+  ##
+  args:
+    - infinity
+
+image:
+  registry: docker.io
+  repository: sequin/sequin
+  tag: latest
+  digest: ""
+  ## Specify a imagePullPolicy
+  ## ref: https://kubernetes.io/docs/concepts/containers/images/#pre-pulled-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ## e.g:
+  ## pullSecrets:
+  ##   - myRegistryKeySecretName
+  ##
+  pullSecrets: []
+  ## Enable debug mode
+  ##
+  debug: false
+
+## @param command Override default container command (useful when using custom images)
+##
+command: []
+## @param args Override default container args (useful when using custom images)
+##
+args: []
+## @param extraEnvVars Array with extra environment variables to add to Sequin nodes
+## e.g:
+## extraEnvVars:
+##   - name: FOO
+##     value: "bar"
+##
+extraEnvVars: []
+## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars for Sequin nodes
+##
+extraEnvVarsCM: ""
+## @param extraEnvVarsSecret Name of existing Secret containing extra env vars for Sequin nodes
+##
+extraEnvVarsSecret: ""
+## @section Sequin deployment parameters
+##
+
+## @param replicaCount Number of Sequin replicas to deploy
+## NOTE: ReadWriteMany PVC(s) are required if replicaCount > 1
+##
+replicaCount: 1
+## @param containerPorts.http Sequin HTTP container port
+##
+containerPorts:
+  http: 7376
+## Configure Pods Security Context
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
+## @param podSecurityContext.enabled Enabled Sequin pods' Security Context
+## @param podSecurityContext.fsGroupChangePolicy Set filesystem group change policy
+## @param podSecurityContext.sysctls Set kernel settings using the sysctl interface
+## @param podSecurityContext.supplementalGroups Set filesystem extra groups
+## @param podSecurityContext.fsGroup Set Sequin pod's Security Context fsGroup
+##
+podSecurityContext:
+  enabled: true
+  fsGroupChangePolicy: Always
+  sysctls: []
+  supplementalGroups: []
+  fsGroup: 1001
+## Configure Container Security Context (only main container)
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
+## @param containerSecurityContext.enabled Enabled containers' Security Context
+## @param containerSecurityContext.seLinuxOptions [object,nullable] Set SELinux options in container
+## @param containerSecurityContext.runAsUser Set containers' Security Context runAsUser
+## @param containerSecurityContext.runAsGroup Set containers' Security Context runAsGroup
+## @param containerSecurityContext.runAsNonRoot Set container's Security Context runAsNonRoot
+## @param containerSecurityContext.privileged Set container's Security Context privileged
+## @param containerSecurityContext.readOnlyRootFilesystem Set container's Security Context readOnlyRootFilesystem
+## @param containerSecurityContext.allowPrivilegeEscalation Set container's Security Context allowPrivilegeEscalation
+## @param containerSecurityContext.capabilities.drop List of capabilities to be dropped
+## @param containerSecurityContext.seccompProfile.type Set container's Security Context seccomp profile
+##
+containerSecurityContext:
+  enabled: true
+  seLinuxOptions: {}
+  runAsUser: 1001
+  runAsGroup: 1001
+  runAsNonRoot: true
+  privileged: false
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+  seccompProfile:
+    type: "RuntimeDefault"
+
+## Sequin service parameters
+##
+service:
+  ## @param service.type Sequin service type
+  ##
+  type: LoadBalancer
+  ## @param service.ports.http Sequin service HTTP port
+  ## @param service.ports.elastic Sequin service ElasticSearch port
+  ##
+  ports:
+    http: 80
+  ## Node ports to expose
+  ## @param service.nodePorts.http Node port for HTTP
+  ## @param service.nodePorts.elastic Node port for ElasticSearch
+  ## NOTE: choose port between <30000-32767>
+  ##
+  nodePorts:
+    http: ""
+  ## @param service.clusterIP Sequin service Cluster IP
+  ## e.g.:
+  ## clusterIP: None
+  ##
+  clusterIP: ""
+  ## @param service.loadBalancerIP Sequin service Load Balancer IP
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
+  ##
+  loadBalancerIP: ""
+  ## @param service.loadBalancerSourceRanges Sequin service Load Balancer sources
+  ## ref: https://kubernetes.io/docs/tasks/access-application-cluster/configure-cloud-provider-firewall/#restrict-access-for-loadbalancer-service
+  ## e.g:
+  ## loadBalancerSourceRanges:
+  ##   - 10.10.10.0/24
+  ##
+  loadBalancerSourceRanges: []
+  ## @param service.externalTrafficPolicy Sequin service external traffic policy
+  ## ref https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+  ##
+  externalTrafficPolicy: Cluster
+  ## @param service.annotations Additional custom annotations for Sequin service
+  ##
+  annotations: {}
+  ## @param service.extraPorts Extra ports to expose in Sequin service (normally used with the `sidecars` value)
+  ##
+  extraPorts: []
+  ## @param service.sessionAffinity Session Affinity for Kubernetes service, can be "None" or "ClientIP"
+  ## If "ClientIP", consecutive client requests will be directed to the same Pod
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
+  ##
+  sessionAffinity: None
+  ## @param service.sessionAffinityConfig Additional settings for the sessionAffinity
+  ## sessionAffinityConfig:
+  ##   clientIP:
+  ##     timeoutSeconds: 300
+  ##
+  sessionAffinityConfig: {}
+
+## @param postgresqlPoolSize The maximum number of concurrent connections that Sequin will maintain to PostgreSQL
+##
+postgresqlPoolSize: 10
+## @param redisPoolSize Number of Redis connections in the pool
+##
+redisPoolSize: 5
+
+## TODO REMOVE ME PLEASE, USE SECRETS
 sequin:
-  image:
-    repository: sequin/sequin
-    tag: latest
-    pullPolicy: Always
-  service:
-    type: NodePort
-    port: 7376
-    nodePort: 31376
   config:
-    # PostgreSQL connection settings
-    # If postgresql.enabled=true, these values will be used
-    # If postgresql.enabled=false, values from externalPostgresql section will be used
-    pgHostname: "{{ .Release.Name }}-postgresql"
-    pgDatabase: sequin
-    pgPort: 5432
-    pgUsername: postgres
-    pgPassword: postgres
-    pgPoolSize: 20
     secretKeyBase: "wDPLYus0pvD6qJhKJICO4dauYPXfO/Yl782Zjtpew5qRBDp7CZvbWtQmY0eB13If"
     vaultKey: "2Sig69bIpuSm2kv0VQfDekET2qy8qUZGI8v3/h3ASiY="
-    # Redis connection settings
-    # If redis.enabled=true, this value will be used
-    # If redis.enabled=false, values from externalRedis section will be used
-    redisUrl: "redis://{{ .Release.Name }}-redis-master:6379"
 
-# PostgreSQL chart configuration
+## PostgreSQL chart configuration
+## https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml
+##
 postgresql:
-  # Set to false to use an external PostgreSQL database
+  ## @param postgresql.enabled Deploy PostgreSQL subchart
+  ##
   enabled: true
+  ## @param postgresql.nameOverride Override name of the PostgreSQL chart
+  ##
+  nameOverride: ""
   auth:
-    username: postgres
-    password: postgres
+    ## @param postgresql.auth.existingSecret Existing secret containing the password of the PostgreSQL chart
+    ##
+    existingSecret: ""
+    ## @param postgresql.auth.password Password for the postgres user of the PostgreSQL chart (auto-generated if not set)
+    ## ref: https://hub.docker.com/_/postgres/
+    ##
+    password: ""
+    ## @param postgresql.auth.username Username to create when deploying the PostgreSQL chart
+    ##
+    username: sequin
+    ## @param postgresql.auth.database Database to create when deploying the PostgreSQL chart
+    ##
     database: sequin
+  ## PostgreSQL Primary parameters
+  ##
   primary:
+    ## PostgreSQL Primary service configuration
+    ##
     service:
+      ## @param postgresql.primary.service.ports.postgresql PostgreSQL service port
+      ##
       ports:
         postgresql: 5432
+    ## PostgreSQL Primary persistence configuration
+    ##
+    persistence:
+      ## @param postgresql.primary.persistence.enabled Enable PostgreSQL Primary data persistence using PVC
+      ##
+      enabled: true
+      ## @param postgresql.primary.persistence.existingClaim Name of an existing PVC to use
+      ##
+      existingClaim: ""
+      ## @param postgresql.primary.persistence.storageClass PVC Storage Class for PostgreSQL Primary data volume
+      ## If defined, storageClassName: <storageClass>
+      ## If set to "-", storageClassName: "", which disables dynamic provisioning
+      ## If undefined (the default) or set to null, no storageClassName spec is
+      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+      ##   GKE, AWS & OpenStack)
+      ##
+      storageClass: ""
+      ## @param postgresql.primary.persistence.accessMode PVC Access Mode for PostgreSQL volume
+      ##
+      accessMode: ReadWriteOnce
+      ## @param postgresql.primary.persistence.size PVC Storage Request for PostgreSQL volume
+      ##
+      size: 8Gi
+## @section External Database settings
+##
 
-# External PostgreSQL configuration
-# Only used when postgresql.enabled is set to false
-externalPostgresql:
-  # External PostgreSQL host
+## External Database Configuration
+## All of these values are only used when postgresql.enabled is set to false
+##
+externalDatabase:
+  ## @param externalDatabase.host Host of an external PostgreSQL instance to connect (only if postgresql.enabled=false)
+  ##
   host: ""
-  # External PostgreSQL port
-  port: 5432
-  # External PostgreSQL username
-  username: postgres
-  # External PostgreSQL password
+  ## @param externalDatabase.user User of an external PostgreSQL instance to connect (only if postgresql.enabled=false)
+  ##
+  user: postgres
+  ## @param externalDatabase.password Password of an external PostgreSQL instance to connect (only if postgresql.enabled=false)
+  ##
   password: ""
-  # External PostgreSQL database name
+  ## @param externalDatabase.existingSecret Secret containing the password of an external PostgreSQL instance to connect (only if postgresql.enabled=false)
+  ## Name of an existing secret resource containing the DB password in a 'password' key
+  ##
+  existingSecret: ""
+  ## @param externalDatabase.database Database inside an external PostgreSQL to connect (only if postgresql.enabled=false)
+  ##
   database: sequin
-  # External PostgreSQL connection pool size
-  poolSize: 20
-  # Use SSL for PostgreSQL connection
-  ssl: false
+  ## @param externalDatabase.port Port of an external PostgreSQL to connect (only if postgresql.enabled=false)
+  ##
+  port: 5432
 
-# Redis chart configuration
+## Redis&reg; chart configuration
+## ref: https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
+## @param redis.enabled Switch to enable or disable the Redis&reg; helm
+## @param redis.auth.enabled Enable password authentication
+## @param redis.auth.password Redis&reg; password
+## @param redis.auth.existingSecret The name of an existing secret with Redis&reg; credentials
+## @param redis.architecture Redis&reg; architecture. Allowed values: `standalone` or `replication`
+##
 redis:
-  # Set to false to use an external Redis instance
   enabled: true
   auth:
-    enabled: false
+    enabled: true
+    ## Redis&reg; password (both master and slave). Defaults to a random 10-character alphanumeric string if not set and auth.enabled is true.
+    ## It should always be set using the password value or in the existingSecret to avoid issues
+    ## with Discourse.
+    ## The password value is ignored if existingSecret is set
+    password: ""
+    existingSecret: ""
+  architecture: standalone
   master:
-    service:
-      ports:
-        redis: 6379
+    ## Redis&reg; master resource requests and limits
+    ## ref: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+    ## @param redis.master.resourcesPreset Set container resources according to one common preset (allowed values: none, nano, small, medium, large, xlarge, 2xlarge). This is ignored if master.resources is set (master.resources is recommended for production).
+    ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
+    ##
+    resourcesPreset: "nano"
+    ## @param redis.master.resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
+    ## Example:
+    ## resources:
+    ##   requests:
+    ##     cpu: 2
+    ##     memory: 512Mi
+    ##   limits:
+    ##     cpu: 3
+    ##     memory: 1024Mi
+    ##
+    resources: {}
 
-# External Redis configuration
-# Only used when redis.enabled is set to false
+## External Redis&reg; configuration
+## All of these values are only used when redis.enabled is set to false
+## @param externalRedis.host Redis&reg; host
+## @param externalRedis.port Redis&reg; port number
+## @param externalRedis.password Redis&reg; password
+## @param externalRedis.existingSecret Name of an existing secret resource containing the Redis&trade credentials
+##
 externalRedis:
-  # External Redis host
-  host: ""
-  # External Redis port
+  host: localhost
   port: 6379
-  # External Redis password (leave empty if auth is disabled)
   password: ""
-  # Use SSL for Redis connection
-  ssl: false
-  # Database index
-  database: 0
+  existingSecret: ""
