@@ -101,9 +101,15 @@ spec:
               value: {{ .Values.redisPoolSize | quote }}
             {{- end }}
             - name: SECRET_KEY_BASE
-              value: {{ .Values.sequin.config.secretKeyBase | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sequin.secretName" . }}
+                  key: secret-key-base
             - name: VAULT_KEY
-              value: {{ .Values.sequin.config.vaultKey | quote }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sequin.secretName" . }}
+                  key: vault-key
             - name: SEQUIN_LOG_FORMAT
               value: CONSOLE
             {{- if .Values.extraEnvVars }}

@@ -98,6 +98,9 @@ image:
   ## Enable debug mode
   ##
   debug: false
+## @param existingSecret Name of a secret with the application password
+##
+existingSecret: ""
 ## @param postgresqlPoolSize The maximum number of concurrent connections that Sequin will maintain to PostgreSQL
 ##
 postgresqlPoolSize: 10
@@ -528,15 +531,6 @@ serviceAccount:
   name: ""
   automountServiceAccountToken: false
   annotations: {}
-
-##
-## TODO REMOVE ME PLEASE, USE SECRETS
-sequin:
-  config:
-    secretKeyBase: "wDPLYus0pvD6qJhKJICO4dauYPXfO/Yl782Zjtpew5qRBDp7CZvbWtQmY0eB13If"
-    vaultKey: "2Sig69bIpuSm2kv0VQfDekET2qy8qUZGI8v3/h3ASiY="
-## END TODO REMOVE ME PLEASE, USE SECRETS
-##
 
 ## PostgreSQL chart configuration
 ## https://github.com/bitnami/charts/blob/main/bitnami/postgresql/values.yaml

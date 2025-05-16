@@ -24,6 +24,13 @@ Create the name of the service account to use
 {{- end -}}
 
 {{/*
+Sequin credential secret name
+*/}}
+{{- define "sequin.secretName" -}}
+{{- coalesce .Values.existingSecret (include "common.names.fullname" .) -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name for PostgreSQL
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
