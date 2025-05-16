@@ -247,15 +247,6 @@ sidecars:
         containerPort: 1234
 ```
 
-## Persistence
-
-The [Sequin](https://github.com/sequinstream/sequin) image stores the Sequin data at the `/bitnami/sequin` path of the container. Persistent Volume Claims are used to keep the data across deployments.
-
-### Adjust permissions of persistent volume mountpoint
-
-As the image run as non-root by default, it is necessary to adjust the ownership of the persistent volume so that the container can write data into it.
-
-By default, the chart is configured to use Kubernetes Security Context to automatically change the ownership of the volume. However, this feature does not work in all Kubernetes distributions.
 
 ## Migration from helm-chart-sequin-old (v0.1.0) to helm-chart-sequin-new (v0.2.0)
 
@@ -335,7 +326,7 @@ To migrate from the old chart (v0.1.0) to the new chart (v0.2.0), follow these s
    Or install from the local directory:
 
    ```console
-   helm install <release-name> ./helm-chart-sequin-new -f new_values.yaml
+   helm install <release-name> ./helm-chart-sequin -f new_values.yaml
    ```
 
 ### Example Migration
