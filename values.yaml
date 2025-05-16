@@ -659,6 +659,8 @@ redis:
     ##     memory: 1024Mi
     ##
     resources: {}
+  serviceBindings:
+    enabled: true
 
 ## External Redis&reg; configuration
 ## All of these values are only used when redis.enabled is set to false
