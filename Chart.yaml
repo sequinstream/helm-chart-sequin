@@ -1,8 +1,16 @@
 apiVersion: v2
 name: sequin
 description: Helm chart for Sequin with PostgreSQL and Redis
-version: 0.1.0
+version: 0.2.0
 type: application
+
+maintainers:
+  - name: Carter Pedersen
+    email: carter.e.pedersen@gmail.com
+    url: https://github.com/RTLS
+  - name: Alexey Zhokhov
+    email: alexey@zhokhov.com
+    url: https://github.com/donbeave
 
 dependencies:
   - condition: postgresql.enabled
