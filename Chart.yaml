@@ -26,3 +26,6 @@ dependencies:
     tags:
       - bitnami-common
     version: 2.x.x
+
+sources:
+  - https://github.com/sequinstream/helm-chart-sequin
