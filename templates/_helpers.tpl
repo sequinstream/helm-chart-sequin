@@ -144,7 +144,7 @@ Get the Redis&reg; credentials secret.
     {{- if .Values.redis.auth.existingSecret -}}
         {{- print (tpl .Values.redis.auth.existingSecret .) -}}
     {{- else -}}
-        {{- print (include "sequin.redis.fullname" .) -}}
+        {{- printf "%s-svcbind" (include "sequin.redis.fullname" .) -}}
     {{- end -}}
 {{- else if .Values.externalRedis.existingSecret -}}
     {{- print (tpl .Values.externalRedis.existingSecret .) -}}
