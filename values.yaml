@@ -633,7 +633,7 @@ externalDatabase:
 redis:
   enabled: true
   auth:
-    enabled: true
+    enabled: false
     ## Redis&reg; password (both master and slave). Defaults to a random 10-character alphanumeric string if not set and auth.enabled is true.
     ## It should always be set using the password value or in the existingSecret to avoid issues
     ## with Discourse.
