@@ -104,6 +104,8 @@ spec:
               value: {{ .Values.sequin.config.secretKeyBase | quote }}
             - name: VAULT_KEY
               value: {{ .Values.sequin.config.vaultKey | quote }}
+            - name: SEQUIN_LOG_FORMAT
+              value: CONSOLE
             {{- if .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
