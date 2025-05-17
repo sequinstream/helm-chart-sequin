@@ -1,0 +1,9 @@
+# Helm chart dependencies
+charts/
+
+# IDE files
+.idea/
+.vscode/
+
+# OS files
+.DS_Store

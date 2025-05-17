@@ -1,6 +1,31 @@
 apiVersion: v2
 name: sequin
 description: Helm chart for Sequin with PostgreSQL and Redis
-version: 0.1.0
+version: 0.2.0
 type: application
 
+maintainers:
+  - name: Carter Pedersen
+    email: carter.e.pedersen@gmail.com
+    url: https://github.com/RTLS
+  - name: Alexey Zhokhov
+    email: alexey@zhokhov.com
+    url: https://github.com/donbeave
+
+dependencies:
+  - condition: postgresql.enabled
+    name: postgresql
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 16.x.x
+  - condition: redis.enabled
+    name: redis
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 18.x.x
+  - name: common
+    repository: oci://registry-1.docker.io/bitnamicharts
+    tags:
+      - bitnami-common
+    version: 2.x.x
+
+sources:
+  - https://github.com/sequinstream/helm-chart-sequin
