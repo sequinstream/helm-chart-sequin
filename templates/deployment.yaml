@@ -185,7 +185,7 @@ spec:
         - name: empty-dir
           emptyDir: {}
         {{- if or $.Values.configuration $.Values.existingConfigmap }}
-        - name: config
+        - name: configuration
           configMap:
             name: {{ template "sequin.configmapName" $ }}
         {{- end }}
