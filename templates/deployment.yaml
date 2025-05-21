@@ -115,10 +115,6 @@ spec:
                   key: vault-key
             - name: SEQUIN_LOG_FORMAT
               value: CONSOLE
-            {{- if or $.Values.configuration $.Values.existingConfigmap }}
-            - name: CONFIG_FILE_PATH
-              value: /sequin/etc/config.yaml
-            {{- end }}
             {{- if .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
