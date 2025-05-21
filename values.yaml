@@ -154,7 +154,7 @@ containerPorts:
 ##
 livenessProbe:
   enabled: true
-  initialDelaySeconds: 5
+  initialDelaySeconds: 15
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 5
@@ -168,7 +168,7 @@ livenessProbe:
 ##
 readinessProbe:
   enabled: true
-  initialDelaySeconds: 5
+  initialDelaySeconds: 15
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 5
@@ -182,7 +182,7 @@ readinessProbe:
 ##
 startupProbe:
   enabled: false
-  initialDelaySeconds: 5
+  initialDelaySeconds: 15
   periodSeconds: 10
   timeoutSeconds: 5
   failureThreshold: 5
