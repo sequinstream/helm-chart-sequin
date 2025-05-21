@@ -98,6 +98,12 @@ image:
   ## Enable debug mode
   ##
   debug: false
+## @param configuration Specify content for Sequin configuration (basic one auto-generated based on other values otherwise)
+##
+configuration: {}
+## @param existingConfigmap The name of an existing ConfigMap with your custom configuration for Sequin
+##
+existingConfigmap: ""
 ## @param existingSecret Name of a secret with the application password
 ##
 existingSecret: ""

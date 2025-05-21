@@ -18,6 +18,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if and $.Values.configuration (not $.Values.existingConfigmap) }}
+        checksum/configuration: {{ include (print $.Template.BasePath "/configmap.yaml") $ | sha256sum }}
+        {{- end }}
         {{- if .Values.podAnnotations }}
         {{- include "common.tplvalues.render" (dict "value" .Values.podAnnotations "context" $) | nindent 8 }}
         {{- end }}
@@ -112,6 +115,10 @@ spec:
                   key: vault-key
             - name: SEQUIN_LOG_FORMAT
               value: CONSOLE
+            {{- if or $.Values.configuration $.Values.existingConfigmap }}
+            - name: CONFIG_FILE_PATH
+              value: /sequin/etc/config.yaml
+            {{- end }}
             {{- if .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
@@ -163,6 +170,11 @@ spec:
             - name: empty-dir
               mountPath: /tmp
               subPath: tmp-dir
+          {{- if or $.Values.configuration $.Values.existingConfigmap }}
+            - name: configuration
+              mountPath: /sequin/etc/config.yaml
+              subPath: config.yaml
+          {{- end }}
           {{- if .Values.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
@@ -172,6 +184,11 @@ spec:
       volumes:
         - name: empty-dir
           emptyDir: {}
+        {{- if or $.Values.configuration $.Values.existingConfigmap }}
+        - name: config
+          configMap:
+            name: {{ template "sequin.configmapName" $ }}
+        {{- end }}
         {{- if .Values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 8 }}
         {{- end }}

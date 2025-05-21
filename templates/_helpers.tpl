@@ -13,6 +13,17 @@ Return the proper Docker Image Registry Secret Names
 {{- end -}}
 
 {{/*
+Get the Sequin configuration ConfigMap
+*/}}
+{{- define "sequin.configmapName" -}}
+{{- if .Values.existingConfigmap -}}
+    {{- tpl .Values.existingConfigmap . -}}
+{{- else }}
+    {{- include "common.names.fullname" . -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create the name of the service account to use
 */}}
 {{- define "sequin.serviceAccountName" -}}
