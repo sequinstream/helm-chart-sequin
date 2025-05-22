@@ -104,6 +104,22 @@ configuration: {}
 ## @param existingConfigmap The name of an existing ConfigMap with your custom configuration for Sequin
 ##
 existingConfigmap: ""
+## @param secretKeyBase secret key base
+## This value is used as the SECRET_KEY_BASE for encrypting sensitive data.
+## IMPORTANT: Do not change this value after deployment, as it would invalidate encrypted data.
+## This is a default value and MUST be overridden in production environments.
+## To generate a secure secret for production, use:
+##   openssl rand -base64 64
+##
+secretKeyBase: "wDPLYus0pvD6qJhKJICO4dauYPXfO/Yl782Zjtpew5qRBDp7CZvbWtQmY0eB13If"
+## @param vaultKey Vault encryption key
+## This key is used by Sequin to encrypt sensitive values like database passwords and API credentials in storage.
+## IMPORTANT: This key must remain consistent — changing it will make previously encrypted data unreadable.
+## This is a default value and MUST be overridden in production environments.
+## To generate a secure key for production, use:
+##   openssl rand -base64 32
+##
+vaultKey: "2Sig69bIpuSm2kv0VQfDekET2qy8qUZGI8v3/h3ASiY="
 ## @param existingSecret Name of a secret with the application password
 ##
 existingSecret: ""
