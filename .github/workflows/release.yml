@@ -52,9 +52,9 @@ jobs:
 
       - name: Generate index.yaml
         run: |
-          helm repo index public/ --url https://ammarun11.github.io/helm-chart-sequin
+          helm repo index public/ --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
 
-      - name: List files
+      - name: List files for debugging
         run: |
           echo "Files in public directory:"
           ls -la public/
