@@ -137,6 +137,17 @@ replicaCount: 1
 ##
 containerPorts:
   http: 7376
+## @param extraContainerPorts Array with extra container ports to add to Sequin containers
+## e.g:
+## extraContainerPorts:
+##   - name: metrics
+##     containerPort: 8376
+##     protocol: TCP
+##
+extraContainerPorts:
+  - name: metrics
+    containerPort: 8376
+    protocol: TCP
 ## Configure extra options for Sequin containers' liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
 ## @param livenessProbe.enabled Enable livenessProbe on Sequin containers
