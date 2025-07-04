@@ -238,7 +238,7 @@ resources: {}
 ## @param podSecurityContext.fsGroup Set Sequin pod's Security Context fsGroup
 ##
 podSecurityContext:
-  enabled: false
+  enabled: true
   fsGroupChangePolicy: Always
   sysctls: []
   supplementalGroups: []
@@ -257,7 +257,7 @@ podSecurityContext:
 ## @param containerSecurityContext.seccompProfile.type Set container's Security Context seccomp profile
 ##
 containerSecurityContext:
-  enabled: false
+  enabled: true
   seLinuxOptions: {}
   runAsUser: 1001
   runAsGroup: 1001
