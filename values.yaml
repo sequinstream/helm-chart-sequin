@@ -44,7 +44,8 @@ nameOverride: ""
 fullnameOverride: ""
 ## @param commonLabels Labels to add to all deployed objects
 ##
-commonLabels: {}
+commonLabels:
+  test: test
 ## @param commonAnnotations Annotations to add to all deployed objects
 ##
 commonAnnotations: {}
@@ -119,11 +120,16 @@ args: []
 ##   - name: FOO
 ##     value: "bar"
 ##
-extraEnvVars: []
+extraEnvVars:
+  - name: CONFIG_FILE_PATH
+    value: "/etc/sequin/sequin.yaml"
 ## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars for Sequin nodes
+## You can use this to reference a ConfigMap containing your sequin.yaml configuration
+## Example: Create a ConfigMap with your sequin.yaml and reference it here
 ##
 extraEnvVarsCM: ""
 ## @param extraEnvVarsSecret Name of existing Secret containing extra env vars for Sequin nodes
+## You can use this to reference a Secret containing sensitive environment variables like database passwords
 ##
 extraEnvVarsSecret: ""
 ## @section Sequin deployment parameters
@@ -137,6 +143,17 @@ replicaCount: 1
 ##
 containerPorts:
   http: 7376
+## @param extraContainerPorts Array with extra container ports to add to Sequin containers
+## e.g:
+## extraContainerPorts:
+##   - name: metrics
+##     containerPort: 8376
+##     protocol: TCP
+##
+extraContainerPorts:
+  - name: metrics
+    containerPort: 8376
+    protocol: TCP
 ## Configure extra options for Sequin containers' liveness and readiness probes
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
 ## @param livenessProbe.enabled Enable livenessProbe on Sequin containers
@@ -147,7 +164,7 @@ containerPorts:
 ## @param livenessProbe.successThreshold Success threshold for livenessProbe
 ##
 livenessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5
@@ -161,7 +178,7 @@ livenessProbe:
 ## @param readinessProbe.successThreshold Success threshold for readinessProbe
 ##
 readinessProbe:
-  enabled: true
+  enabled: false
   initialDelaySeconds: 5
   periodSeconds: 10
   timeoutSeconds: 5
@@ -195,7 +212,7 @@ customStartupProbe: {}
 ## @param resourcesPreset Set container resources according to one common preset (allowed values: none, nano, micro, small, medium, large, xlarge, 2xlarge). This is ignored if resources is set (resources is recommended for production).
 ## More information: https://github.com/bitnami/charts/blob/main/bitnami/common/templates/_resources.tpl#L15
 ##
-resourcesPreset: "small"
+resourcesPreset: "xlarge"
 ## @param resources Set container requests and limits for different resources like CPU or memory (essential for production workloads)
 ## Example:
 ## resources:
@@ -257,7 +274,9 @@ hostAliases: []
 ## @param podLabels Extra labels for Sequin pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 ##
-podLabels: {}
+podLabels:
+  team: hypersoc
+
 ## @param podAnnotations Annotations for Sequin pods
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
 ##
@@ -320,10 +339,16 @@ schedulerName: ""
 lifecycleHooks: {}
 ## @param extraVolumes Optionally specify extra list of additional volumes for the Sequin pod(s)
 ##
-extraVolumes: []
+extraVolumes:
+  - name: sequin-config
+    configMap:
+      name: sequin-infrastructure-as-code
 ## @param extraVolumeMounts Optionally specify extra list of additional volumeMounts for the Sequin container(s)
 ##
-extraVolumeMounts: []
+extraVolumeMounts:
+  - name: sequin-config
+    mountPath: /etc/sequin/
+    readOnly: true
 ## @param sidecars Add additional sidecar containers to the Sequin pod(s)
 ## e.g:
 ## sidecars:
@@ -391,7 +416,10 @@ service:
   annotations: {}
   ## @param service.extraPorts Extra ports to expose in Sequin service (normally used with the `sidecars` value)
   ##
-  extraPorts: []
+  extraPorts:
+    - name: metrics
+      port: 8376
+      targetPort: metrics
   ## @param service.sessionAffinity Session Affinity for Kubernetes service, can be "None" or "ClientIP"
   ## If "ClientIP", consecutive client requests will be directed to the same Pod
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
@@ -403,9 +431,13 @@ service:
   ##     timeoutSeconds: 300
   ##
   sessionAffinityConfig: {}
-  ## @param service.labels Additional labels for the Sequin service
+  ## @param service.labels Additional labels for the Service resource
+  ## e.g:
+  ## labels:
+  ##   app: sequin
   ##
-  labels: {}
+  labels:
+    service: service
 ## Sequin ingress parameters
 ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ##
@@ -530,7 +562,7 @@ rbac:
 ## @param serviceAccount.annotations Annotations for service account. Evaluated as a template. Only used if `create` is `true`.
 ##
 serviceAccount:
-  create: true
+  create: false
   name: ""
   automountServiceAccountToken: false
   annotations: {}
@@ -541,59 +573,7 @@ serviceAccount:
 postgresql:
   ## @param postgresql.enabled Deploy PostgreSQL subchart
   ##
-  enabled: true
-  ## @param postgresql.nameOverride Override name of the PostgreSQL chart
-  ##
-  nameOverride: ""
-  auth:
-    ## @param postgresql.auth.existingSecret Existing secret containing the password of the PostgreSQL chart
-    ##
-    existingSecret: ""
-    ## @param postgresql.auth.password Password for the postgres user of the PostgreSQL chart (auto-generated if not set)
-    ## ref: https://hub.docker.com/_/postgres/
-    ##
-    password: ""
-    ## @param postgresql.auth.username Username to create when deploying the PostgreSQL chart
-    ##
-    username: sequin
-    ## @param postgresql.auth.database Database to create when deploying the PostgreSQL chart
-    ##
-    database: sequin
-  ## PostgreSQL Primary parameters
-  ##
-  primary:
-    ## PostgreSQL Primary service configuration
-    ##
-    service:
-      ## @param postgresql.primary.service.ports.postgresql PostgreSQL service port
-      ##
-      ports:
-        postgresql: 5432
-    ## PostgreSQL Primary persistence configuration
-    ##
-    persistence:
-      ## @param postgresql.primary.persistence.enabled Enable PostgreSQL Primary data persistence using PVC
-      ##
-      enabled: true
-      ## @param postgresql.primary.persistence.existingClaim Name of an existing PVC to use
-      ##
-      existingClaim: ""
-      ## @param postgresql.primary.persistence.storageClass PVC Storage Class for PostgreSQL Primary data volume
-      ## If defined, storageClassName: <storageClass>
-      ## If set to "-", storageClassName: "", which disables dynamic provisioning
-      ## If undefined (the default) or set to null, no storageClassName spec is
-      ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-      ##   GKE, AWS & OpenStack)
-      ##
-      storageClass: ""
-      ## @param postgresql.primary.persistence.accessMode PVC Access Mode for PostgreSQL volume
-      ##
-      accessMode: ReadWriteOnce
-      ## @param postgresql.primary.persistence.size PVC Storage Request for PostgreSQL volume
-      ##
-      size: 8Gi
-## @section External Database settings
-##
+  enabled: false
 
 ## External Database Configuration
 ## All of these values are only used when postgresql.enabled is set to false
@@ -601,20 +581,19 @@ postgresql:
 externalDatabase:
   ## @param externalDatabase.host Host of an external PostgreSQL instance to connect (only if postgresql.enabled=false)
   ##
-  host: ""
+  host: "case-management-cloudsql-proxy.default.svc.cluster.local"
   ## @param externalDatabase.user User of an external PostgreSQL instance to connect (only if postgresql.enabled=false)
   ##
-  user: postgres
-  ## @param externalDatabase.password Password of an external PostgreSQL instance to connect (only if postgresql.enabled=false)
+  user: "sequin_user"
   ##
-  password: ""
+  password: "n7Qw8z-2A1b~4X6c0V2B5N7m1L3K9P_D"
   ## @param externalDatabase.existingSecret Secret containing the password of an external PostgreSQL instance to connect (only if postgresql.enabled=false)
   ## Name of an existing secret resource containing the DB password in a 'password' key
   ##
   existingSecret: ""
   ## @param externalDatabase.database Database inside an external PostgreSQL to connect (only if postgresql.enabled=false)
   ##
-  database: sequin
+  database: "sequin"
   ## @param externalDatabase.port Port of an external PostgreSQL to connect (only if postgresql.enabled=false)
   ##
   port: 5432
@@ -628,7 +607,7 @@ externalDatabase:
 ## @param redis.architecture Redis&reg; architecture. Allowed values: `standalone` or `replication`
 ##
 redis:
-  enabled: true
+  enabled: false
   auth:
     enabled: false
     ## Redis&reg; password (both master and slave). Defaults to a random 10-character alphanumeric string if not set and auth.enabled is true.
@@ -667,7 +646,7 @@ redis:
 ## @param externalRedis.existingSecret Name of an existing secret resource containing the Redis&trade credentials
 ##
 externalRedis:
-  host: localhost
+  host: "case-management-redis.default.svc.cluster.local"
   port: 6379
   password: ""
   existingSecret: ""
