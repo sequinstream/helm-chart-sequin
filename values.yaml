@@ -414,6 +414,9 @@ service:
   ##     timeoutSeconds: 300
   ##
   sessionAffinityConfig: {}
+  ## @param service.labels Additional labels for the Sequin service
+  ##
+  labels: {}
 ## Sequin ingress parameters
 ## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ##
