@@ -125,6 +125,14 @@ Return the Database Secret Name
 {{- end -}}
 
 {{/*
+Return the image for the wait-for-db init container.
+Defaults to the PostgreSQL subchart image.
+*/}}
+{{- define "sequin.waitForDB.image" -}}
+{{- include "common.images.image" (dict "imageRoot" .Values.postgresql.image "global" .Values.global) -}}
+{{- end -}}
+
+{{/*
 Get the Redis&reg; fullname
 */}}
 {{- define "sequin.redis.fullname" -}}

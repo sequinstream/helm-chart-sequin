@@ -378,6 +378,18 @@ sidecars: []
 ##    command: ['sh', '-c', 'echo "hello world"']
 ##
 initContainers: []
+## @section Database readiness parameters
+##
+
+## Wait for database init container
+## Adds an init container that waits for PostgreSQL to accept connections
+## before starting Sequin. Prevents crash-loops on fresh installs when
+## deploying with the bundled PostgreSQL subchart.
+## Only takes effect when postgresql.enabled=true.
+## @param waitForDB.enabled Enable the wait-for-db init container
+##
+waitForDB:
+  enabled: true
 ## @section Traffic Exposure Parameters
 ##
 
